@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
-import httpProxy from 'http-proxy';
-
 
 function Main() {
   const [tasks, setTasks] = useState([]);
@@ -10,18 +8,14 @@ function Main() {
       fetchTasks();
     }, []);
   
-    const proxy = new httpProxy({
-      target: 'http://localhost:3000',
+    const instance = axios.create({
+      withCredentials: true,
     });
-    
-    const axiosInstance = axios.create({
-      proxy: proxy,
-    });
-
     const fetchTasks = async () => {
       try {
-        const response = await axiosInstance.get('/api/v1/tasks/');
-        setTasks(response.data); 
+        const response = await instance.get('http://localhost:3000/api/v1/tasks/');
+        setTasks(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error('Error fetching tasks:', error);
       }

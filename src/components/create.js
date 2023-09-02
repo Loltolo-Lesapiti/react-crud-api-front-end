@@ -1,91 +1,56 @@
-import axios from 'axios';
 import React, { useState } from 'react';
+import axios from 'axios';
 
-function Create() {
-  const [task, setTask] = useState('');
-  const [description, setDescription] = useState('');
-  const [completed, setCompleted] = useState(false);
+function Create() { // Changed the component name to start with an uppercase letter
+  const [task, setTask] = useState({ // Use parentheses () for useState
+    name: '',
+    description: '',
+    completed: false
+  });
 
-  const handleTask = (e) => {
-    setTask(e.target.value);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setTask({ ...task, [name]: value });
   };
 
-  const handleDescription = (e) => {
-    setDescription(e.target.value);
-  };
-
-  const handleCompleted = (e) => {
-    setCompleted(e.target.checked);
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Prepare data for axios api.
-    const formData={
-      task,
-      description,
-      completed}
-    // Pass the form data to axios.
-    try{
-      const response= axios.post("http://localhost:3000/api/v1/tasks/", formData)
-      if (response.status === 201) {
-        console.log('Data added successfully:', response.data);
-      } else {
-        console.log('Unexpected response:', response);
-      }
-    }catch (error){
-      console.error("Error", error)
+    try {
+      await axios.post('http://127.0.0.1:3000/api/v1/tasks/', { task });
+      console.log('Task added successfully');
+    } catch (error) {
+      console.log('Error creating task', error);
     }
   };
 
   return (
-    <div className="p-4">
-      <form onSubmit={handleSubmit} className="bg-gray-200 p-4 rounded-lg">
-        <div className="mb-4">
-          <label className="block mb-2 font-bold" htmlFor="input1">
-            Task:
-          </label>
+    <div>
+      <h2>Create Task</h2>
+      <form onSubmit={handleSubmit}>
+        <label>
+          Name:
           <input
             type="text"
-            id="input1"
-            className="w-full p-2 border rounded-md"
-            value={task}
-            onChange={handleTask}
+            name="name"
+            value={task.name}
+            onChange={handleChange}
           />
-        </div>
-        <div className="mb-4">
-          <label className="block mb-2 font-bold" htmlFor="input2">
-            Description:
-          </label>
+        </label>
+        <br />
+        <label>
+          Description:
           <input
             type="text"
-            id="input2"
-            className="w-full p-2 border rounded-md"
-            value={description}
-            onChange={handleDescription}
+            name="description"
+            value={task.description}
+            onChange={handleChange}
           />
-        </div>
-        <div className="mb-4">
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              className="mr-2"
-              checked={completed}
-              onChange={handleCompleted}
-            />
-            Task Completed
-          </label>
-        </div>
-        <button
-          type="submit"
-          className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
-          onClick={handleSubmit}
-        >
-          Submit
-        </button>
+        </label>
+        <br />
+        <button type="submit">Create Task</button>
       </form>
     </div>
   );
 }
 
-export default Create;
+export default Create; // Changed the component name to start with an uppercase letter

@@ -1,25 +1,30 @@
 import React, {useEffect, useState} from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
+import axios from 'axios';
 
 function Main() {
   const [tasks, setTasks] = useState([]);
+  const [loading, setLoading]=useState(true);
     useEffect(() => {
       fetchTasks();
     }, []);
-  
-    const instance = axios.create({
-      withCredentials: true,
-    });
+
     const fetchTasks = async () => {
       try {
-        const response = await instance.get('http://localhost:3000/api/v1/tasks/');
+        const response = await axios.get("http://127.0.0.1:3000/api/v1/tasks/");
         setTasks(response.data);
-        console.log(response.data);
+        setLoading(false);
+        
       } catch (error) {
         console.error('Error fetching tasks:', error);
+        setLoading(false)
       }
     };
+
+    if(loading){
+      return <h2>Loading</h2>
+    }
+    
      return (
   <div className='flex content-center flex-col'>
   <Link>
